@@ -31,7 +31,11 @@
 
       store.user = supabase.auth.user()
       supabase.auth.onAuthStateChange((_, session) => {
-        store.user = session.user
+        if(session){
+          store.user = session.user
+        }else{//clear out storage to render login ui
+          store.user=null
+        }
       })
 
       return {
@@ -42,18 +46,8 @@
   }
 
 // <TestLoadingVue/>
-/*
-<div>
-    <RouterLink to="/">Home</RouterLink><span> | </span>
-    <RouterLink to="/about">About</RouterLink>
-  </div>
-  
-  <LoadingVue v-show="isLoading"/>
-  <RouterView/>
-*/
 </script>
 <template>
-  
   <LoadingVue v-show="isLoading"/>
   <template v-if="store.user">
     <RouterView />

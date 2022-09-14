@@ -13,12 +13,14 @@
 import "./styles.css";
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { createApp } from 'vue'
-
+import { supabase } from './libs/supabaseclient';
 import { store } from './components/store'
 import App from './components/App.vue';
+import Access from "./components/Access.vue"
 
 //import ThemeProvider from "./components/theme/ThemeProvider";
-//import { AuthProvider } from "./components/auth/AuthProvider";
+
+store.user = supabase.auth.user()
 
 const routes = [
   {
@@ -30,6 +32,15 @@ const routes = [
     path: '/about',
     name:'About',
     component: () => import('./pages/about.vue'),
+  },
+  { //this is just a test
+    path: '/:access', //supabase url parse??
+    name:'access',
+    component: Access,
+    props: route => {
+      console.log(route)
+      return ({ query: route.query.q })
+    }
   },
   /*
   {
@@ -44,7 +55,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes, // short for `routes: routes`
 })
-// https://stackoverflow.com/questions/44886812/how-to-display-a-loading-animation-while-a-lazy-loaded-route-component-is-bein
+
 router.beforeResolve((to, from, next) => {
   //console.log(to)
   if(to.name){
@@ -56,13 +67,8 @@ router.beforeResolve((to, from, next) => {
 //need to make sure move to page url?
 router.afterEach((to, from) => {
   // Complete the animation of the route progress bar.
-  //console.log("done?",to)
-  //console.log("from?",from)
-  //console.log(store.isLoading)
-  //console.log("loading done...")
-  //setTimeout(()=>{
-    //store.isLoading=false;  
-  //},2000)
+  //console.log("done?")
+  //setTimeout(()=>{store.isLoading=false;},2000)
   store.isLoading=false;
 })
 
